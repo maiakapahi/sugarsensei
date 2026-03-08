@@ -76,13 +76,13 @@ export default function FamilyDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-foreground">🩺 SugarCoach</h1>
+        <h1 className="text-xl font-bold text-foreground">🥋 Sugar Sensei</h1>
         <Button variant="ghost" size="sm" onClick={handleLogout}>
           <LogOut className="h-4 w-4 mr-1" /> Sign Out
         </Button>
       </header>
 
-      <Tabs defaultValue="bg-insights" className="w-full">
+      <Tabs defaultValue="carb-counter" className="w-full">
         <div className="border-b border-border">
           <TabsList className="w-full max-w-2xl mx-auto h-12 bg-transparent rounded-none p-0 gap-0">
             <TabsTrigger

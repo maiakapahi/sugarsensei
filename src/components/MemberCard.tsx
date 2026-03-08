@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Member, getMemberData, getGlucoseStatus, getGlucoseColorClass, getGlucoseBgClass, getTrendArrow, getTrendLabel } from "@/lib/mock-data";
+import { Member, getMemberData, getGlucoseStatus, getGlucoseColorClass, getGlucoseBgClass, getTrendArrow, getTrendLabel, mgToMmol } from "@/lib/mock-data";
 
 interface MemberCardProps {
   member: Member;

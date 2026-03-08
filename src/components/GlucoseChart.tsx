@@ -118,8 +118,8 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
               width={35}
             />
             <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine y={70} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
-            <ReferenceLine y={180} stroke="#f59e0b" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <ReferenceLine y={3.9} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <ReferenceLine y={10.0} stroke="#f59e0b" strokeDasharray="4 4" strokeOpacity={0.5} />
 
             {/* Shaded in-range zone */}
             <defs>

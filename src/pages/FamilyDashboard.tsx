@@ -82,7 +82,7 @@ export default function FamilyDashboard() {
         </Button>
       </header>
 
-      <Tabs defaultValue="bg-insights" className="w-full">
+      <Tabs defaultValue="carb-counter" className="w-full">
         <div className="border-b border-border">
           <TabsList className="w-full max-w-2xl mx-auto h-12 bg-transparent rounded-none p-0 gap-0">
             <TabsTrigger

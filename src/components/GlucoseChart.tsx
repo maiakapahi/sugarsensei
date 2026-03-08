@@ -63,7 +63,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
     return (
       <div className="bg-surface-2 border border-border rounded-md px-3 py-2 text-sm shadow-lg">
         <p className="font-semibold" style={{ color: data.color }}>
-          {data.value} mg/dL
+          {data.value} mmol/L
         </p>
         <p className="text-muted-foreground text-xs">
           {format(new Date(data.time), "h:mm a")}

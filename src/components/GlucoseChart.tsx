@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine,
-  ResponsiveContainer, Tooltip, Scatter, ScatterChart, ComposedChart,
+  Line, XAxis, YAxis, CartesianGrid, ReferenceLine,
+  ResponsiveContainer, Tooltip, ComposedChart,
 } from "recharts";
 import { EGVReading, DexcomEvent, getGlucoseHex, mgToMmol } from "@/lib/mock-data";
 import { format } from "date-fns";
@@ -11,7 +11,14 @@ interface GlucoseChartProps {
   events: DexcomEvent[];
 }
 
-const timeRanges = [3, 6, 12, 24] as const;
+const timeRanges = [
+  { label: "3hr", hours: 3 },
+  { label: "6hr", hours: 6 },
+  { label: "12hr", hours: 12 },
+  { label: "24hr", hours: 24 },
+  { label: "3d", hours: 72 },
+  { label: "7d", hours: 168 },
+];
 
 export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const [hours, setHours] = useState<number>(6);
@@ -80,15 +87,15 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
         <div className="flex gap-1 bg-surface-2 rounded-md p-0.5">
           {timeRanges.map((t) => (
             <button
-              key={t}
-              onClick={() => setHours(t)}
+              key={t.hours}
+              onClick={() => setHours(t.hours)}
               className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                hours === t
+                hours === t.hours
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t}hr
+              {t.label}
             </button>
           ))}
         </div>

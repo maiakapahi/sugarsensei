@@ -119,12 +119,13 @@ serve(async (req) => {
       }
     }
 
-    // Calculate time range
+    // Calculate time range — Dexcom requires YYYY-MM-DDThh:mm:ss (no Z)
     const endDate = new Date();
     const startDate = new Date(endDate.getTime() - hours * 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/\.\d{3}Z$/, "");
     const timeParams = {
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      startDate: fmt(startDate),
+      endDate: fmt(endDate),
     };
 
     // Fetch EGVs and events in parallel

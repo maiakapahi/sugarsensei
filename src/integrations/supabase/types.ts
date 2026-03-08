@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cgm_events: {
+        Row: {
+          created_at: string
+          duration: number | null
+          event_type: string
+          id: string
+          member_id: string
+          timestamp: string
+          value: number | null
+        }
+        Insert: {
+          created_at?: string
+          duration?: number | null
+          event_type: string
+          id?: string
+          member_id: string
+          timestamp: string
+          value?: number | null
+        }
+        Update: {
+          created_at?: string
+          duration?: number | null
+          event_type?: string
+          id?: string
+          member_id?: string
+          timestamp?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cgm_events_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cgm_readings: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          timestamp: string
+          trend: string | null
+          trend_rate: number | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          timestamp: string
+          trend?: string | null
+          trend_rate?: number | null
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          timestamp?: string
+          trend?: string | null
+          trend_rate?: number | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cgm_readings_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          member_id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          member_id: string
+          role: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          member_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          created_at: string
+          dexcom_access_token: string | null
+          dexcom_refresh_token: string | null
+          dexcom_token_expiry: string | null
+          dob: string | null
+          id: string
+          name: string
+          parent_user_id: string
+          relationship: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dexcom_access_token?: string | null
+          dexcom_refresh_token?: string | null
+          dexcom_token_expiry?: string | null
+          dob?: string | null
+          id?: string
+          name: string
+          parent_user_id: string
+          relationship?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dexcom_access_token?: string | null
+          dexcom_refresh_token?: string | null
+          dexcom_token_expiry?: string | null
+          dob?: string | null
+          id?: string
+          name?: string
+          parent_user_id?: string
+          relationship?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

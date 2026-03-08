@@ -1,1 +1,13 @@
 project_id = "anaefvucevmodrdgenxc"
+
+[functions.dexcom-auth]
+verify_jwt = false
+
+[functions.dexcom-callback]
+verify_jwt = false
+
+[functions.dexcom-data]
+verify_jwt = false
+
+[functions.ai-coach]
+verify_jwt = false

@@ -3,7 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine,
   ResponsiveContainer, Tooltip, Scatter, ScatterChart, ComposedChart,
 } from "recharts";
-import { EGVReading, DexcomEvent, getGlucoseHex } from "@/lib/mock-data";
+import { EGVReading, DexcomEvent, getGlucoseHex, mgToMmol } from "@/lib/mock-data";
 import { format } from "date-fns";
 
 interface GlucoseChartProps {

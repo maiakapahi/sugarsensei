@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startDexcomOAuth } from "@/lib/api";
 import { MemberCard } from "@/components/MemberCard";
+import { CarbCounter } from "@/components/CarbCounter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { Plus, LogOut } from "lucide-react";
+import { Plus, LogOut, Activity, UtensilsCrossed } from "lucide-react";
 
 interface Member {
   id: string;

@@ -135,7 +135,7 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
       )}
 
       {/* Input */}
-      <div className="p-3 border-t border-border">
+      <div className="p-3 pb-16 sm:pb-3 border-t border-border">
         <form
           onSubmit={(e) => { e.preventDefault(); sendMessage(input); }}
           className="flex gap-2"

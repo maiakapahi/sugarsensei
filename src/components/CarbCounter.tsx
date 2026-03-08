@@ -183,7 +183,7 @@ export function CarbCounter() {
       )}
 
       {/* Input bar */}
-      <form onSubmit={sendMessage} className="border-t border-border px-4 py-3 flex items-center gap-2">
+      <form onSubmit={sendMessage} className="border-t border-border px-4 py-3 pb-16 sm:pb-3 flex items-center gap-2">
         <input
           ref={fileInputRef}
           type="file"

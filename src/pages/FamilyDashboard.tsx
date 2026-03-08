@@ -76,7 +76,7 @@ export default function FamilyDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-foreground">🩺 SugarCoach</h1>
+        <h1 className="text-xl font-bold text-foreground">🥋 Sugar Sensei</h1>
         <Button variant="ghost" size="sm" onClick={handleLogout}>
           <LogOut className="h-4 w-4 mr-1" /> Sign Out
         </Button>

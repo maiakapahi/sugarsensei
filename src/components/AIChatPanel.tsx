@@ -96,8 +96,8 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
   }
 
   return (
-    <div className="bg-card border border-border rounded-lg flex flex-col h-[400px]">
-      <div className="px-4 py-3 border-b border-border">
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-3">
         <h3 className="text-sm font-medium text-foreground">🤖 AI Coach</h3>
       </div>
 

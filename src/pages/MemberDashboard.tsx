@@ -135,13 +135,13 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
         {latest && (
           <div className="text-center py-4">
             <span className={`text-7xl font-black tracking-tighter ${getGlucoseColorClass(latest.value)}`}>
-              {latest.value}
+              {mgToMmol(latest.value)}
             </span>
             <span className={`text-3xl ml-2 ${getGlucoseColorClass(latest.value)}`}>
               {getTrendArrow(latest.trend)}
             </span>
             <p className="text-sm text-muted-foreground mt-1">
-              {getTrendLabel(latest.trend)} · {latest.trendRate > 0 ? "+" : ""}{latest.trendRate} mg/dL/min
+              {getTrendLabel(latest.trend)} · mmol/L
             </p>
           </div>
         )}

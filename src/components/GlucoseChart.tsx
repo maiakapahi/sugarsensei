@@ -11,7 +11,14 @@ interface GlucoseChartProps {
   events: DexcomEvent[];
 }
 
-const timeRanges = [3, 6, 12, 24] as const;
+const timeRanges = [
+  { label: "3hr", hours: 3 },
+  { label: "6hr", hours: 6 },
+  { label: "12hr", hours: 12 },
+  { label: "24hr", hours: 24 },
+  { label: "3d", hours: 72 },
+  { label: "7d", hours: 168 },
+];
 
 export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const [hours, setHours] = useState<number>(6);

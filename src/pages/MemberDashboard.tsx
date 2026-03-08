@@ -158,8 +158,32 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
 
         <StatsBar {...stats} />
         <GlucoseChart egvs={egvs} events={events} />
-        <AIChatPanel cgmContext={cgmContext} />
       </main>
+
+      {/* Floating chat button */}
+      {!chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </button>
+      )}
+
+      {/* Slide-in chat panel */}
+      {chatOpen && (
+        <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] bg-card border-l border-border shadow-2xl flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <h3 className="text-sm font-semibold text-foreground">🤖 AI Coach</h3>
+            <button onClick={() => setChatOpen(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <AIChatPanel cgmContext={cgmContext} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

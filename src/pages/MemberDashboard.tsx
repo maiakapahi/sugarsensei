@@ -24,6 +24,7 @@ export default function MemberDashboard() {
   const [needsAuth, setNeedsAuth] = useState(false);
   const [useMock, setUseMock] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     if (memberId) loadData();

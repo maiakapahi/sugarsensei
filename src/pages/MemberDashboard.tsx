@@ -39,13 +39,13 @@ export default function MemberDashboard() {
 
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
+    const fetchHours = 168; // 7 days
     try {
-      const result = await fetchDexcomData(memberId!, 24);
+      const result = await fetchDexcomData(memberId!, fetchHours);
       if (result.needsAuth) {
         setNeedsAuth(true);
-        // Fall back to mock data for demo
-        setEgvs(generateMockEGVs(24));
-        setEvents(generateMockEvents(24));
+        setEgvs(generateMockEGVs(fetchHours));
+        setEvents(generateMockEvents(fetchHours));
         setUseMock(true);
         setMemberName(result.memberName || "Member");
       } else {
@@ -57,9 +57,8 @@ export default function MemberDashboard() {
       }
       setLastUpdated(new Date());
     } catch (err: any) {
-      // Fall back to mock for demo
-      setEgvs(generateMockEGVs(24));
-      setEvents(generateMockEvents(24));
+      setEgvs(generateMockEGVs(fetchHours));
+      setEvents(generateMockEvents(fetchHours));
       setUseMock(true);
       // Try to get member name
       const { data: member } = await supabase

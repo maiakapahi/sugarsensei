@@ -20,10 +20,10 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const filtered = egvs.filter((r) => new Date(r.timestamp) >= cutoff);
   const filteredEvents = events.filter((e) => new Date(e.timestamp) >= cutoff);
 
-  // Build chart data with glucose segments colored by value
+  // Build chart data with glucose values in mmol/L
   const chartData = filtered.map((r) => ({
     time: new Date(r.timestamp).getTime(),
-    value: r.value,
+    value: mgToMmol(r.value),
     color: getGlucoseHex(r.value),
   }));
 

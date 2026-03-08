@@ -11,6 +11,7 @@ import { ArrowLeft, RefreshCw } from "lucide-react";
 import {
   EGVReading, DexcomEvent, getGlucoseStatus, getGlucoseColorClass,
   getTrendArrow, getTrendLabel, calculateStats, generateMockEGVs, generateMockEvents,
+  mgToMmol,
 } from "@/lib/mock-data";
 
 export default function MemberDashboard() {

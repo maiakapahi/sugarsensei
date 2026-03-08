@@ -36,7 +36,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
     );
     return {
       time: new Date(e.timestamp).getTime(),
-      value: closestReading?.value || 150,
+      value: mgToMmol(closestReading?.value || 150),
       type: e.type,
       amount: e.value,
       duration: e.duration,

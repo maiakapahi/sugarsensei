@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Member, getMemberData, getGlucoseStatus, getGlucoseColorClass, getGlucoseBgClass, getTrendArrow, getTrendLabel } from "@/lib/mock-data";
+import { Member, getMemberData, getGlucoseStatus, getGlucoseColorClass, getGlucoseBgClass, getTrendArrow, getTrendLabel, mgToMmol } from "@/lib/mock-data";
 
 interface MemberCardProps {
   member: Member;
@@ -35,10 +35,10 @@ export function MemberCard({ member }: MemberCardProps) {
 
       <div className="flex items-baseline gap-2 mb-3">
         <span className={`text-5xl font-extrabold tracking-tight ${colorClass}`}>
-          {latest.value}
+          {mgToMmol(latest.value)}
         </span>
         <span className={`text-2xl ${colorClass}`}>{arrow}</span>
-        <span className="text-sm text-muted-foreground ml-1">mg/dL</span>
+        <span className="text-sm text-muted-foreground ml-1">mmol/L</span>
       </div>
 
       <div className="flex items-center gap-2 mb-2">

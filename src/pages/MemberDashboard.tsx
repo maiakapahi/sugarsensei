@@ -11,6 +11,7 @@ import { ArrowLeft, RefreshCw } from "lucide-react";
 import {
   EGVReading, DexcomEvent, getGlucoseStatus, getGlucoseColorClass,
   getTrendArrow, getTrendLabel, calculateStats, generateMockEGVs, generateMockEvents,
+  mgToMmol,
 } from "@/lib/mock-data";
 
 export default function MemberDashboard() {
@@ -76,20 +77,20 @@ export default function MemberDashboard() {
 
   // Build CGM context for AI
   const cgmContext = latest ? `
-Current BG: ${latest.value} mg/dL
-Trend: ${getTrendLabel(latest.trend)} (${latest.trendRate} mg/dL/min)
+Current BG: ${mgToMmol(latest.value)} mmol/L
+Trend: ${getTrendLabel(latest.trend)} (${Math.round(mgToMmol(latest.trendRate) * 10) / 10} mmol/L/min)
 Status: ${getGlucoseStatus(latest.value)}
-Time in Range (70-180): ${stats.tir}%
+Time in Range (3.9–10.0): ${stats.tir}%
 Time High: ${stats.high}%
 Time Low: ${stats.low}%
-Average BG: ${stats.avg} mg/dL
+Average BG: ${stats.avg} mmol/L
 Readings in last 24h: ${stats.readings}
 Recent events: ${events.map(e =>
   e.type === "carbs" ? `${e.value}g carbs` :
   e.type === "insulin" ? `${e.value}u insulin` :
   `${e.duration}min exercise`
 ).join(", ") || "None"}
-Last 6 readings: ${egvs.slice(-6).map(r => `${r.value} (${getTrendArrow(r.trend)})`).join(", ")}
+Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArrow(r.trend)})`).join(", ")}
   `.trim() : "No CGM data available.";
 
   if (loading) {
@@ -134,13 +135,13 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${r.value} (${getTrendArrow(r.trend)
         {latest && (
           <div className="text-center py-4">
             <span className={`text-7xl font-black tracking-tighter ${getGlucoseColorClass(latest.value)}`}>
-              {latest.value}
+              {mgToMmol(latest.value)}
             </span>
             <span className={`text-3xl ml-2 ${getGlucoseColorClass(latest.value)}`}>
               {getTrendArrow(latest.trend)}
             </span>
             <p className="text-sm text-muted-foreground mt-1">
-              {getTrendLabel(latest.trend)} · {latest.trendRate > 0 ? "+" : ""}{latest.trendRate} mg/dL/min
+              {getTrendLabel(latest.trend)} · mmol/L
             </p>
           </div>
         )}

@@ -3,7 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceLine,
   ResponsiveContainer, Tooltip, Scatter, ScatterChart, ComposedChart,
 } from "recharts";
-import { EGVReading, DexcomEvent, getGlucoseHex } from "@/lib/mock-data";
+import { EGVReading, DexcomEvent, getGlucoseHex, mgToMmol } from "@/lib/mock-data";
 import { format } from "date-fns";
 
 interface GlucoseChartProps {
@@ -20,10 +20,10 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const filtered = egvs.filter((r) => new Date(r.timestamp) >= cutoff);
   const filteredEvents = events.filter((e) => new Date(e.timestamp) >= cutoff);
 
-  // Build chart data with glucose segments colored by value
+  // Build chart data with glucose values in mmol/L
   const chartData = filtered.map((r) => ({
     time: new Date(r.timestamp).getTime(),
-    value: r.value,
+    value: mgToMmol(r.value),
     color: getGlucoseHex(r.value),
   }));
 
@@ -36,7 +36,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
     );
     return {
       time: new Date(e.timestamp).getTime(),
-      value: closestReading?.value || 150,
+      value: mgToMmol(closestReading?.value || 150),
       type: e.type,
       amount: e.value,
       duration: e.duration,
@@ -63,7 +63,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
     return (
       <div className="bg-surface-2 border border-border rounded-md px-3 py-2 text-sm shadow-lg">
         <p className="font-semibold" style={{ color: data.color }}>
-          {data.value} mg/dL
+          {data.value} mmol/L
         </p>
         <p className="text-muted-foreground text-xs">
           {format(new Date(data.time), "h:mm a")}
@@ -110,7 +110,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
               tickLine={false}
             />
             <YAxis
-              domain={[40, 350]}
+              domain={[2, 20]}
               stroke="hsl(0 0% 35%)"
               tick={{ fontSize: 11 }}
               axisLine={false}
@@ -118,8 +118,8 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
               width={35}
             />
             <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine y={70} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
-            <ReferenceLine y={180} stroke="#f59e0b" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <ReferenceLine y={3.9} stroke="#ef4444" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <ReferenceLine y={10.0} stroke="#f59e0b" strokeDasharray="4 4" strokeOpacity={0.5} />
 
             {/* Shaded in-range zone */}
             <defs>

@@ -37,7 +37,7 @@ export default function AuthPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-            🩺 SugarCoach
+            🥋 Sugar Sensei
           </h1>
           <p className="text-muted-foreground text-sm mt-2">T1D family management</p>
         </div>

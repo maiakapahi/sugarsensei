@@ -87,15 +87,15 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
         <div className="flex gap-1 bg-surface-2 rounded-md p-0.5">
           {timeRanges.map((t) => (
             <button
-              key={t}
-              onClick={() => setHours(t)}
+              key={t.hours}
+              onClick={() => setHours(t.hours)}
               className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                hours === t
+                hours === t.hours
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t}hr
+              {t.label}
             </button>
           ))}
         </div>

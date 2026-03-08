@@ -97,9 +97,6 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-4 py-3">
-        <h3 className="text-sm font-medium text-foreground">🤖 AI Coach</h3>
-      </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((m, i) => (

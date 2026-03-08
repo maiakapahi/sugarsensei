@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => ({
         navigateFallbackDenylist: [/^\/~oauth/],
       },
       manifest: {
-        name: "SugarCoach",
-        short_name: "SugarCoach",
+        name: "Sugar Sensei",
+        short_name: "Sugar Sensei",
         description: "Family diabetes management with BG insights and carb counting",
         theme_color: "#0f0f0f",
         background_color: "#0f0f0f",

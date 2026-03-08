@@ -110,7 +110,7 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
               tickLine={false}
             />
             <YAxis
-              domain={[40, 350]}
+              domain={[2, 20]}
               stroke="hsl(0 0% 35%)"
               tick={{ fontSize: 11 }}
               axisLine={false}

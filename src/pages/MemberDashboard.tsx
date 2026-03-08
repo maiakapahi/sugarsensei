@@ -7,7 +7,7 @@ import { StatsBar } from "@/components/StatsBar";
 import { AIChatPanel } from "@/components/AIChatPanel";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw, MessageCircle, X } from "lucide-react";
 import {
   EGVReading, DexcomEvent, getGlucoseStatus, getGlucoseColorClass,
   getTrendArrow, getTrendLabel, calculateStats, generateMockEGVs, generateMockEvents,

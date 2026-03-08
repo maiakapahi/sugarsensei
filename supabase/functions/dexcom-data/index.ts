@@ -76,15 +76,13 @@ serve(async (req) => {
     if (!SUPABASE_URL) throw new Error("SUPABASE_URL not configured");
     if (!SUPABASE_SERVICE_ROLE_KEY) throw new Error("SUPABASE_SERVICE_ROLE_KEY not configured");
 
-    // Validate auth
+    // Validate auth using service role client
     const authHeader = req.headers.get("authorization");
     if (!authHeader) throw new Error("Missing authorization header");
 
-    const supabaseAuth = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "");
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (authError || !user) throw new Error("Unauthorized");
-
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    if (authError || !user) throw new Error("Unauthorized");
 
     const { memberId, hours = 24 } = await req.json();
     if (!memberId) throw new Error("memberId is required");

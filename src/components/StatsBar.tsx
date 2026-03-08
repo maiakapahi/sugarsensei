@@ -18,7 +18,7 @@ export function StatsBar({ tir, high, low, avg, readings }: StatsBarProps) {
         />
         <StatItem label="Time High" value={`${high}%`} color="text-glucose-high" />
         <StatItem label="Time Low" value={`${low}%`} color="text-glucose-low" />
-        <StatItem label="Average" value={`${avg}`} sub="mg/dL" />
+        <StatItem label="Average" value={`${avg}`} sub="mmol/L" />
         <StatItem label="Readings" value={`${readings}`} />
       </div>
     </div>

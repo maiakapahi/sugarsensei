@@ -1,16 +1,16 @@
 project_id = "anaefvucevmodrdgenxc"
 
 [functions.dexcom-auth]
-verify_jwt = false
+verify_jwt = true
 
 [functions.dexcom-callback]
-verify_jwt = false
+verify_jwt = true
 
 [functions.dexcom-data]
-verify_jwt = false
+verify_jwt = true
 
 [functions.ai-coach]
-verify_jwt = false
+verify_jwt = true
 
 [functions.carb-counter]
-verify_jwt = false
+verify_jwt = true

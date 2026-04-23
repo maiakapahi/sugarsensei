@@ -1,7 +1,8 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "sugar-sensei",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Sugar Sensei is a family diabetes management PWA with Dexcom sandbox integration and AI-assisted carb counting.",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -23,6 +23,14 @@ serve(async (req) => {
     if (!SUPABASE_URL) throw new Error("SUPABASE_URL not configured");
     if (!SUPABASE_SERVICE_ROLE_KEY) throw new Error("SUPABASE_SERVICE_ROLE_KEY not configured");
 
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader) throw new Error("Missing authorization header");
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) throw new Error("Unauthorized");
+
     const { code, memberId, redirectUri } = await req.json();
     if (!code) throw new Error("Authorization code is required");
     if (!memberId) throw new Error("memberId is required");
@@ -50,21 +58,35 @@ serve(async (req) => {
     const { access_token, refresh_token, expires_in } = tokenData;
     const expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
 
-    // Store tokens in database using service role
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: member, error: memberLookupError } = await supabase
+      .from("members")
+      .select("id")
+      .eq("id", memberId)
+      .eq("parent_user_id", user.id)
+      .maybeSingle();
 
-    const { error: updateError } = await supabase
+    if (memberLookupError) throw new Error(memberLookupError.message);
+    if (!member) throw new Error("Member not found or not authorized");
+
+    const { data: updatedMember, error: updateError } = await supabase
       .from("members")
       .update({
         dexcom_access_token: access_token,
         dexcom_refresh_token: refresh_token,
         dexcom_token_expiry: expiresAt,
       })
-      .eq("id", memberId);
+      .eq("id", memberId)
+      .eq("parent_user_id", user.id)
+      .select("id")
+      .maybeSingle();
 
     if (updateError) {
       console.error("Failed to store tokens:", updateError);
-      throw new Error("Failed to store Dexcom tokens");
+      throw new Error(`Failed to store Dexcom tokens: ${updateError.message}`);
+    }
+
+    if (!updatedMember) {
+      throw new Error(`Failed to store Dexcom tokens: member ${memberId} was not found`);
     }
 
     return new Response(JSON.stringify({ success: true }), {

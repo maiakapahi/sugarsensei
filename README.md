@@ -1,73 +1,133 @@
-# Welcome to your Lovable project
+# Sugar Sensei
 
-## Project info
+Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. It combines family dashboards, CGM trend views, AI-assisted carb counting, and an AI coach tuned for Type 1 Diabetes workflows.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Highlights
 
-## How can I edit this code?
+- Dexcom sandbox OAuth flow with token storage in Supabase
+- Family member management with row-level security
+- AI carb counting with image upload support
+- AI coach for recent CGM trend summaries
+- Mobile-friendly PWA with installable manifest
 
-There are several ways of editing your application.
+## Stack
 
-**Use Lovable**
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Supabase Auth, Postgres, and Edge Functions
+- OpenAI for AI features
+- Dexcom sandbox API for CGM integration
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Local development
 
-Changes made via Lovable will be committed automatically to this repo.
+Prerequisites:
 
-**Use your preferred IDE**
+- Node.js 20+
+- npm
+- Supabase CLI available through `npx supabase`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Install dependencies:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Run the app locally:
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Environment
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Frontend environment variables:
 
-**Use GitHub Codespaces**
+```sh
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Supabase Edge Function secrets:
 
-## What technologies are used for this project?
+```sh
+OPENAI_API_KEY=your_openai_api_key
+DEXCOM_CLIENT_ID=your_dexcom_client_id
+DEXCOM_CLIENT_SECRET=your_dexcom_client_secret
+```
 
-This project is built with:
+## Supabase setup
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Link the repo to your project:
 
-## How can I deploy this project?
+```sh
+npx supabase login
+npx supabase link --project-ref YOUR_PROJECT_REF
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Apply migrations:
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npx supabase db push
+```
 
-Yes, you can!
+Set secrets:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```sh
+npx supabase secrets set OPENAI_API_KEY=your_openai_api_key
+npx supabase secrets set DEXCOM_CLIENT_ID=your_dexcom_client_id
+npx supabase secrets set DEXCOM_CLIENT_SECRET=your_dexcom_client_secret
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Deploy functions:
+
+```sh
+npx supabase functions deploy ai-coach
+npx supabase functions deploy carb-counter
+npx supabase functions deploy dexcom-auth
+npx supabase functions deploy dexcom-callback
+npx supabase functions deploy dexcom-data
+```
+
+## Vercel deployment
+
+Deploy the frontend on Vercel with:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+
+Set these Vercel environment variables:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+After deploy, set your Supabase Auth site URL and redirect URLs to your Vercel domain.
+
+## Dexcom sandbox
+
+This repo is configured for Dexcom sandbox by default. Register a Dexcom developer app and set the redirect URI to:
+
+```text
+https://your-vercel-domain/dexcom-callback
+```
+
+Dexcom sandbox docs:
+
+- [Authentication](https://developer.dexcom.com/docs/dexcom/authentication)
+- [Sandbox Data](https://developer.dexcom.com/docs/dexcom/sandbox-data/)
+
+## Security notes
+
+- Do not commit `.env` files or secrets.
+- Keep OpenAI and Dexcom credentials in Supabase secrets, not in the browser.
+- Redeploy Supabase functions after changing auth rules or secrets.
+
+## Current status
+
+Current setup supports:
+
+- Supabase auth and member creation
+- Dexcom sandbox connection
+- AI carb counting
+- AI coaching
+
+Production Dexcom support can be added later by making the Dexcom base URL configurable instead of sandbox-only.

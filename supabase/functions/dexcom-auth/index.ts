@@ -8,7 +8,7 @@ const corsHeaders = {
 
 // Use sandbox for development
 const DEXCOM_BASE = "https://sandbox-api.dexcom.com";
-const DEXCOM_AUTH_URL = `${DEXCOM_BASE}/v2/oauth2/login`;
+const DEXCOM_AUTH_URL = `${DEXCOM_BASE}/v3/oauth2/login`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

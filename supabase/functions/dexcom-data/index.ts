@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const DEXCOM_BASE = "https://sandbox-api.dexcom.com";
-const DEXCOM_TOKEN_URL = `${DEXCOM_BASE}/v2/oauth2/token`;
+const DEXCOM_TOKEN_URL = `${DEXCOM_BASE}/v3/oauth2/token`;
 
 async function refreshAccessToken(
   supabase: any,

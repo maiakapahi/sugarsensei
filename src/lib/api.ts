@@ -2,39 +2,51 @@ import { supabase } from "@/integrations/supabase/client";
 
 const DEXCOM_REDIRECT_URI = `${window.location.origin}/dexcom-callback`;
 
-export async function startDexcomOAuth(memberId: string) {
-  const { data, error } = await supabase.functions.invoke("dexcom-auth", {
-    body: { memberId, redirectUri: DEXCOM_REDIRECT_URI },
+async function invokeSupabaseFunction(functionName: string, body: Record<string, unknown>) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${functionName}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(body),
   });
 
-  if (error) throw new Error(error.message || "Failed to start Dexcom auth");
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    throw new Error(data?.error || `Function ${functionName} failed with status ${resp.status}`);
+  }
+
   if (data?.error) throw new Error(data.error);
+  return data;
+}
+
+export async function startDexcomOAuth(memberId: string) {
+  const data = await invokeSupabaseFunction("dexcom-auth", {
+    memberId,
+    redirectUri: DEXCOM_REDIRECT_URI,
+  });
 
   // Redirect to Dexcom login
   window.location.href = data.authUrl;
 }
 
 export async function completeDexcomOAuth(code: string, memberId: string) {
-  const { data, error } = await supabase.functions.invoke("dexcom-callback", {
-    body: { code, memberId, redirectUri: DEXCOM_REDIRECT_URI },
+  return invokeSupabaseFunction("dexcom-callback", {
+    code,
+    memberId,
+    redirectUri: DEXCOM_REDIRECT_URI,
   });
-
-  if (error) throw new Error(error.message || "Failed to complete Dexcom auth");
-  if (data?.error) throw new Error(data.error);
-  return data;
 }
 
 export async function fetchDexcomData(memberId: string, hours: number = 24) {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) throw new Error("Not authenticated");
 
-  const { data, error } = await supabase.functions.invoke("dexcom-data", {
-    body: { memberId, hours },
-  });
-
-  if (error) throw new Error(error.message || "Failed to fetch Dexcom data");
-  if (data?.error) throw new Error(data.error);
-  return data;
+  return invokeSupabaseFunction("dexcom-data", { memberId, hours });
 }
 
 export interface ChatMessage {

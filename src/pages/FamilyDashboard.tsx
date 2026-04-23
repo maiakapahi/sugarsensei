@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startDexcomOAuth } from "@/lib/api";
 import { MemberCard } from "@/components/MemberCard";
@@ -24,10 +24,19 @@ export default function FamilyDashboard() {
   const [newName, setNewName] = useState("");
   const [newRelationship, setNewRelationship] = useState("");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     loadMembers();
   }, []);
+
+  useEffect(() => {
+    if (loading || showAdd) return;
+    if (searchParams.get("skipAutoOpen") === "1") return;
+    if (members.length === 1) {
+      navigate(`/member/${members[0].id}`, { replace: true });
+    }
+  }, [loading, showAdd, members, navigate, searchParams]);
 
   async function loadMembers() {
     const { data, error } = await supabase.from("members").select("id, name, relationship, dexcom_access_token");

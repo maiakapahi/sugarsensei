@@ -52,7 +52,10 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
     };
     try {
       await streamAICoach({
-        messages: [{ role: "user", content: "Give me a brief insight summary of the current glucose data — 2-3 sentences about how things are looking and any notable patterns." }],
+        messages: [{
+          role: "user",
+          content: "Analyze the past 24 hours of glucose data. Give me a brief summary of how things are looking, call out any notable patterns, and mention anything worth watching next.",
+        }],
         cgmContext,
         onDelta: updateAssistant,
         onDone: () => setIsStreaming(false),

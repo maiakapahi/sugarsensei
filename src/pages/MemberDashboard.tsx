@@ -24,7 +24,7 @@ export default function MemberDashboard() {
   const [needsAuth, setNeedsAuth] = useState(false);
   const [useMock, setUseMock] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [chatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(true);
 
   useEffect(() => {
     if (memberId) loadData();
@@ -108,7 +108,7 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")}>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/?skipAutoOpen=1")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-lg font-bold text-foreground">{memberName}</h1>

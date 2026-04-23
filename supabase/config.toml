@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.ai-coach]
 verify_jwt = false
+
+[functions.carb-counter]
+verify_jwt = false

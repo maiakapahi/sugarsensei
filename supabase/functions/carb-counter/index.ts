@@ -9,8 +9,8 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
 
     const { messages } = await req.json();
 
@@ -53,14 +53,14 @@ Your job is to estimate carbohydrate content in foods from photos or description
 - Be encouraging and supportive — this is hard and they're doing great
 - Keep it concise — people need quick answers before eating`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-5.4-mini",
         messages: [
           { role: "system", content: systemPrompt },
           ...messages,
@@ -71,7 +71,7 @@ Your job is to estimate carbohydrate content in foods from photos or description
 
     if (!response.ok) {
       const t = await response.text();
-      console.error("AI Gateway error:", response.status, t);
+      console.error("OpenAI error:", response.status, t);
       throw new Error(`AI error [${response.status}]: ${t}`);
     }
 

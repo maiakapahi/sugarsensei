@@ -121,6 +121,15 @@ Dexcom sandbox docs:
 - Keep OpenAI and Dexcom credentials in Supabase secrets, not in the browser.
 - Redeploy Supabase functions after changing auth rules or secrets.
 
+## Demo access
+
+Use this account for testing the deployed app:
+
+- Email: `demouser@sugarsensei.com`
+- Password: `demouser`
+
+This account should be treated as demo-only and connected to sandbox or sample data.
+
 ## Current status
 
 Current setup supports:

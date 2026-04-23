@@ -24,7 +24,8 @@ export default function FamilyDashboard() {
   const [newName, setNewName] = useState("");
   const [newRelationship, setNewRelationship] = useState("");
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") === "carb-counter" ? "carb-counter" : "bg-insights";
 
   useEffect(() => {
     loadMembers();
@@ -32,11 +33,12 @@ export default function FamilyDashboard() {
 
   useEffect(() => {
     if (loading || showAdd) return;
+    if (activeTab !== "bg-insights") return;
     if (searchParams.get("skipAutoOpen") === "1") return;
     if (members.length === 1) {
       navigate(`/member/${members[0].id}`, { replace: true });
     }
-  }, [loading, showAdd, members, navigate, searchParams]);
+  }, [loading, showAdd, activeTab, members, navigate, searchParams]);
 
   async function loadMembers() {
     const { data, error } = await supabase.from("members").select("id, name, relationship, dexcom_access_token");
@@ -82,6 +84,18 @@ export default function FamilyDashboard() {
     navigate("/auth");
   }
 
+  function handleTabChange(value: string) {
+    const nextParams = new URLSearchParams(searchParams);
+    if (value === "carb-counter") {
+      nextParams.set("tab", "carb-counter");
+      nextParams.set("skipAutoOpen", "1");
+    } else {
+      nextParams.delete("tab");
+      nextParams.delete("skipAutoOpen");
+    }
+    setSearchParams(nextParams, { replace: true });
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
@@ -91,7 +105,7 @@ export default function FamilyDashboard() {
         </Button>
       </header>
 
-      <Tabs defaultValue="bg-insights" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <div className="border-b border-border">
           <TabsList className="w-full max-w-2xl mx-auto h-12 bg-transparent rounded-none p-0 gap-0">
             <TabsTrigger

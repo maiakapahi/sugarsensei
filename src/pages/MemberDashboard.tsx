@@ -6,8 +6,9 @@ import { GlucoseChart } from "@/components/GlucoseChart";
 import { StatsBar } from "@/components/StatsBar";
 import { AIChatPanel } from "@/components/AIChatPanel";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, RefreshCw, MessageCircle, X } from "lucide-react";
+import { ArrowLeft, RefreshCw, MessageCircle, X, Activity, UtensilsCrossed } from "lucide-react";
 import {
   EGVReading, DexcomEvent, getGlucoseStatus, getGlucoseColorClass,
   getTrendArrow, getTrendLabel, calculateStats, generateMockEGVs, generateMockEvents,
@@ -129,6 +130,35 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
           </Button>
         </div>
       </header>
+
+      <Tabs
+        value="bg-insights"
+        onValueChange={(value) => {
+          if (value === "carb-counter") {
+            navigate("/?tab=carb-counter&skipAutoOpen=1");
+          }
+        }}
+        className="w-full"
+      >
+        <div className="border-b border-border">
+          <TabsList className="w-full max-w-2xl mx-auto h-12 bg-transparent rounded-none p-0 gap-0">
+            <TabsTrigger
+              value="bg-insights"
+              className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none gap-2"
+            >
+              <Activity className="h-4 w-4" />
+              BG Insights
+            </TabsTrigger>
+            <TabsTrigger
+              value="carb-counter"
+              className="flex-1 h-full rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none gap-2"
+            >
+              <UtensilsCrossed className="h-4 w-4" />
+              Carb Counter
+            </TabsTrigger>
+          </TabsList>
+        </div>
+      </Tabs>
 
       <main className="max-w-4xl mx-auto p-4 space-y-4">
         {/* Current BG hero */}

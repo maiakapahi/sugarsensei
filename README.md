@@ -1,6 +1,15 @@
 # Sugar Sensei
 
-Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. It combines family dashboards, CGM trend views, AI-assisted carb counting, and an AI coach tuned for Type 1 Diabetes workflows.
+Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. I originally built it for my son, who lives with Type 1 Diabetes, to make CGM trends, carb counting, and day-to-day decisions easier to manage in one place.
+
+## Demo access
+
+Use this account for testing the deployed app:
+
+- Email: `demouser@sugarsensei.com`
+- Password: `demouser`
+
+This account is demo-only and should stay connected to sandbox or sample data.
 
 ## Highlights
 
@@ -120,15 +129,6 @@ Dexcom sandbox docs:
 - Do not commit `.env` files or secrets.
 - Keep OpenAI and Dexcom credentials in Supabase secrets, not in the browser.
 - Redeploy Supabase functions after changing auth rules or secrets.
-
-## Demo access
-
-Use this account for testing the deployed app:
-
-- Email: `demouser@sugarsensei.com`
-- Password: `demouser`
-
-This account should be treated as demo-only and connected to sandbox or sample data.
 
 ## Current status
 

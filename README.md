@@ -11,6 +11,14 @@ Use this account for testing the deployed app:
 
 This account is demo-only and should stay connected to sandbox or sample data.
 
+## Disclaimer
+
+Sugar Sensei is a personal prototype built for learning and exploration of AI-assisted workflows and healthcare integrations.
+
+It is not a medical device and is not intended to provide medical advice, diagnosis, or treatment decisions.
+
+All data is simulated or sandbox-based.
+
 ## Highlights
 
 - Dexcom sandbox OAuth flow with token storage in Supabase

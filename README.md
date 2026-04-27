@@ -6,7 +6,7 @@ Sugar Sensei is a personal-use diabetes management PWA built with React, Supabas
 
 Use this account for testing the deployed app:
 
-- Email: `demouser@sugarsensei.com`
+- Email: `demo@sugarsensei.ca`
 - Password: `demouser`
 
 This account is demo-only and should stay connected to sandbox or sample data.

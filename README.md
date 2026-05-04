@@ -2,12 +2,31 @@
 
 Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. I originally built it for my son, who lives with Type 1 Diabetes, to make CGM trends, carb counting, and day-to-day decisions easier to manage in one place.
 
-## Demo access
+## Demo access (two ways)
 
-Use this account for testing the deployed app:
+### 1. Portfolio preview — no login (mock UI)
+
+For a **public URL where visitors do not need credentials**, enable portfolio layout:
+
+- Set **`VITE_DEMO_MODE=true`** in `.env` locally, or in **Vercel → Project → Settings → Environment Variables** (then **redeploy** so Vite picks it up).
+- With that flag:
+  - **`/`** — interactive demo (mock CGM, sample family, canned AI/carb replies; no Supabase session).
+  - **`/app`** — real signed-in app (same as before, but under `/app`).
+  - **`/auth`** — sign in / sign up for the real app.
+  - **`/demo`** — redirects to **`/`** (legacy bookmark).
+
+Example production host: `https://sugarsensei.vercel.app/` for the demo when the variable is set on that deployment.
+
+Without `VITE_DEMO_MODE`, **`/` requires auth** (you are sent to `/auth` if not signed in).
+
+### 2. Full app sandbox — demo account
+
+Use this account when you want **real auth, Dexcom sandbox, and live edge functions**:
 
 - Email: `demo@sugarsensei.ca`
 - Password: `demouser`
+
+Open **`/auth`**, sign in, then use **`/app`** if portfolio mode is on, or **`/`** if it is off.
 
 This account is demo-only and should stay connected to sandbox or sample data.
 
@@ -62,6 +81,8 @@ Frontend environment variables:
 ```sh
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+# Optional: public demo at / and signed-in app at /app (see "Demo access")
+# VITE_DEMO_MODE=true
 ```
 
 Supabase Edge Function secrets:
@@ -116,8 +137,9 @@ Set these Vercel environment variables:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
+- Optional for portfolio: `VITE_DEMO_MODE` = `true` (redeploy after adding)
 
-After deploy, set your Supabase Auth site URL and redirect URLs to your Vercel domain.
+After deploy, set your Supabase Auth site URL and redirect URLs to your Vercel domain. If you use portfolio mode, include both your site root and **`/app`** (or the paths you use) in Supabase redirect URLs as needed for your auth flow.
 
 ## Dexcom sandbox
 

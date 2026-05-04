@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { isPortfolioDemoBuild } from "@/lib/portfolio-demo-build";
+import { authedHomePath } from "@/lib/authed-routes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -24,7 +26,7 @@ export default function AuthPage() {
         if (error) throw error;
         toast({ title: "Check your email", description: "We sent you a confirmation link." });
       }
-      navigate("/");
+      navigate(authedHomePath());
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
@@ -80,6 +82,15 @@ export default function AuthPage() {
               {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
             </Button>
           </form>
+
+          {isPortfolioDemoBuild() && (
+            <p className="text-center text-xs text-muted-foreground mt-4">
+              <Link to="/" className="underline hover:text-foreground">
+                Try the interactive demo
+              </Link>{" "}
+              — no account required
+            </p>
+          )}
         </div>
       </div>
     </div>

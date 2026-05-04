@@ -3,8 +3,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { isPortfolioDemoBuild } from "@/lib/portfolio-demo-build";
+import { PortfolioDemoProvider } from "@/context/PortfolioDemoContext";
 import AuthPage from "./pages/AuthPage";
 import FamilyDashboard from "./pages/FamilyDashboard";
 import MemberDashboard from "./pages/MemberDashboard";
@@ -38,6 +40,31 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function portfolioRoutes() {
+  return (
+    <>
+      <Route element={<PortfolioDemoProvider><Outlet /></PortfolioDemoProvider>}>
+        <Route path="/" element={<FamilyDashboard />} />
+        <Route path="/member/:memberId" element={<MemberDashboard />} />
+      </Route>
+      <Route path="/app" element={<AuthGuard><Outlet /></AuthGuard>}>
+        <Route index element={<FamilyDashboard />} />
+        <Route path="member/:memberId" element={<MemberDashboard />} />
+      </Route>
+      <Route path="/demo" element={<Navigate to="/" replace />} />
+    </>
+  );
+}
+
+function defaultRoutes() {
+  return (
+    <>
+      <Route path="/" element={<AuthGuard><FamilyDashboard /></AuthGuard>} />
+      <Route path="/member/:memberId" element={<AuthGuard><MemberDashboard /></AuthGuard>} />
+    </>
+  );
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -48,8 +75,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/dexcom-callback" element={<DexcomCallbackPage />} />
-            <Route path="/" element={<AuthGuard><FamilyDashboard /></AuthGuard>} />
-            <Route path="/member/:memberId" element={<AuthGuard><MemberDashboard /></AuthGuard>} />
+            {isPortfolioDemoBuild() ? portfolioRoutes() : defaultRoutes()}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

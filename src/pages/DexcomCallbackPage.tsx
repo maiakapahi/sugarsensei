@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { completeDexcomOAuth } from "@/lib/api";
+import { authedMemberPath } from "@/lib/authed-routes";
 import { toast } from "@/hooks/use-toast";
 
 export default function DexcomCallbackPage() {
@@ -20,7 +21,7 @@ export default function DexcomCallbackPage() {
     completeDexcomOAuth(code, state)
       .then(() => {
         toast({ title: "Success!", description: "Dexcom connected successfully." });
-        navigate(`/member/${state}`);
+        navigate(authedMemberPath(state));
       })
       .catch((err) => {
         setStatus(`Failed to connect: ${err.message}`);

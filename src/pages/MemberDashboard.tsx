@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchDexcomData, startDexcomOAuth } from "@/lib/api";
+import { familyListPath } from "@/lib/authed-routes";
+import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
+import { mockMembers } from "@/lib/mock-data";
 import { GlucoseChart } from "@/components/GlucoseChart";
 import { StatsBar } from "@/components/StatsBar";
 import { AIChatPanel } from "@/components/AIChatPanel";
@@ -16,6 +19,7 @@ import {
 } from "@/lib/mock-data";
 
 export default function MemberDashboard() {
+  const isDemo = usePortfolioDemo();
   const { memberId } = useParams<{ memberId: string }>();
   const navigate = useNavigate();
   const [memberName, setMemberName] = useState("");
@@ -29,18 +33,28 @@ export default function MemberDashboard() {
 
   useEffect(() => {
     if (memberId) loadData();
-  }, [memberId]);
+  }, [memberId, isDemo]);
 
   // Auto-refresh every 5 minutes
   useEffect(() => {
-    if (!memberId || needsAuth) return;
+    if (!memberId || needsAuth || isDemo) return;
     const interval = setInterval(() => loadData(true), 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [memberId, needsAuth]);
+  }, [memberId, needsAuth, isDemo]);
 
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
     const fetchHours = 168; // 7 days
+    if (isDemo) {
+      setEgvs(generateMockEGVs(fetchHours));
+      setEvents(generateMockEvents(fetchHours));
+      setMemberName(mockMembers.find((m) => m.id === memberId)?.name || "Member");
+      setNeedsAuth(false);
+      setUseMock(true);
+      setLastUpdated(new Date());
+      setLoading(false);
+      return;
+    }
     try {
       const result = await fetchDexcomData(memberId!, fetchHours);
       if (result.needsAuth) {
@@ -61,7 +75,6 @@ export default function MemberDashboard() {
       setEgvs(generateMockEGVs(fetchHours));
       setEvents(generateMockEvents(fetchHours));
       setUseMock(true);
-      // Try to get member name
       const { data: member } = await supabase
         .from("members")
         .select("name")
@@ -109,7 +122,7 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/?skipAutoOpen=1")}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(`${familyListPath(isDemo)}?skipAutoOpen=1`)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-lg font-bold text-foreground">{memberName}</h1>
@@ -135,7 +148,7 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
         value="bg-insights"
         onValueChange={(value) => {
           if (value === "carb-counter") {
-            navigate("/?tab=carb-counter&skipAutoOpen=1");
+            navigate(`${familyListPath(isDemo)}?tab=carb-counter&skipAutoOpen=1`);
           }
         }}
         className="w-full"
@@ -176,7 +189,7 @@ Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArro
           </div>
         )}
 
-        {needsAuth && (
+        {needsAuth && !isDemo && (
           <div className="bg-glucose-high/10 border border-glucose-high/20 rounded-lg p-4 text-center">
             <p className="text-sm text-foreground mb-2">Dexcom needs to be connected or re-authorized</p>
             <Button size="sm" onClick={() => startDexcomOAuth(memberId!)}>

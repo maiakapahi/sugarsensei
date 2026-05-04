@@ -3,6 +3,8 @@ import { Camera, Send, Image as ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
+import { streamCannedText, DEMO_CARB_REPLY } from "@/lib/demo-stream";
 
 interface Message {
   role: "user" | "assistant";
@@ -11,6 +13,7 @@ interface Message {
 }
 
 export function CarbCounter() {
+  const portfolioDemo = usePortfolioDemo();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -56,6 +59,27 @@ export function CarbCounter() {
     scrollToBottom();
 
     try {
+      if (portfolioDemo) {
+        let assistantContent = "";
+        setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+        await streamCannedText(
+          DEMO_CARB_REPLY,
+          (chunk) => {
+            assistantContent += chunk;
+            setMessages((prev) => {
+              const next = [...prev];
+              next[next.length - 1] = { role: "assistant", content: assistantContent };
+              return next;
+            });
+            scrollToBottom();
+          },
+          () => {},
+          3,
+          10,
+        );
+        return;
+      }
+
       const aiMessages = [...messages, userMsg].map((m) => ({
         role: m.role,
         content: m.image

@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startDexcomOAuth } from "@/lib/api";
+import { memberDashboardPath } from "@/lib/authed-routes";
+import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
+import { mockMembers } from "@/lib/mock-data";
 import { MemberCard } from "@/components/MemberCard";
 import { CarbCounter } from "@/components/CarbCounter";
 import { Button } from "@/components/ui/button";
@@ -18,6 +21,7 @@ interface Member {
 }
 
 export default function FamilyDashboard() {
+  const isDemo = usePortfolioDemo();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -29,18 +33,30 @@ export default function FamilyDashboard() {
 
   useEffect(() => {
     loadMembers();
-  }, []);
+  }, [isDemo]);
 
   useEffect(() => {
     if (loading || showAdd) return;
     if (activeTab !== "bg-insights") return;
     if (searchParams.get("skipAutoOpen") === "1") return;
     if (members.length === 1) {
-      navigate(`/member/${members[0].id}`, { replace: true });
+      navigate(memberDashboardPath(isDemo, members[0].id), { replace: true });
     }
-  }, [loading, showAdd, activeTab, members, navigate, searchParams]);
+  }, [loading, showAdd, activeTab, members, navigate, searchParams, isDemo]);
 
   async function loadMembers() {
+    if (isDemo) {
+      setMembers(
+        mockMembers.map((m) => ({
+          id: m.id,
+          name: m.name,
+          relationship: m.relationship,
+          dexcom_access_token: "demo",
+        })),
+      );
+      setLoading(false);
+      return;
+    }
     const { data, error } = await supabase.from("members").select("id, name, relationship, dexcom_access_token");
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -52,6 +68,7 @@ export default function FamilyDashboard() {
 
   async function addMember(e: React.FormEvent) {
     e.preventDefault();
+    if (isDemo) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -72,6 +89,13 @@ export default function FamilyDashboard() {
   }
 
   async function connectDexcom(memberId: string) {
+    if (isDemo) {
+      toast({
+        title: "Portfolio demo",
+        description: "Sign in to the full app to connect a real Dexcom account.",
+      });
+      return;
+    }
     try {
       await startDexcomOAuth(memberId);
     } catch (err: any) {
@@ -80,6 +104,10 @@ export default function FamilyDashboard() {
   }
 
   async function handleLogout() {
+    if (isDemo) {
+      navigate("/auth");
+      return;
+    }
     await supabase.auth.signOut();
     navigate("/auth");
   }
@@ -98,10 +126,17 @@ export default function FamilyDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-foreground">🥋 Sugar Sensei</h1>
-        <Button variant="ghost" size="sm" onClick={handleLogout}>
-          <LogOut className="h-4 w-4 mr-1" /> Sign Out
+      <header className="border-b border-border px-4 py-3 flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-foreground truncate">🥋 Sugar Sensei</h1>
+          {isDemo && (
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Demo · <button type="button" className="underline hover:text-foreground" onClick={() => navigate("/auth")}>Sign in for the real app</button>
+            </p>
+          )}
+        </div>
+        <Button variant="ghost" size="sm" onClick={handleLogout} className="shrink-0">
+          <LogOut className="h-4 w-4 mr-1" /> {isDemo ? "Exit" : "Sign Out"}
         </Button>
       </header>
 
@@ -129,9 +164,11 @@ export default function FamilyDashboard() {
           <main className="max-w-2xl mx-auto p-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-foreground">Family Members</h2>
-              <Button size="sm" onClick={() => setShowAdd(true)}>
-                <Plus className="h-4 w-4 mr-1" /> Add Member
-              </Button>
+              {!isDemo && (
+                <Button size="sm" onClick={() => setShowAdd(true)}>
+                  <Plus className="h-4 w-4 mr-1" /> Add Member
+                </Button>
+              )}
             </div>
 
             {showAdd && (

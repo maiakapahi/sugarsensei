@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
+import { memberDashboardPath } from "@/lib/authed-routes";
 import { Member, getMemberData, getGlucoseStatus, getGlucoseColorClass, getGlucoseBgClass, getTrendArrow, getTrendLabel, mgToMmol } from "@/lib/mock-data";
 
 interface MemberCardProps {
@@ -7,6 +9,7 @@ interface MemberCardProps {
 
 export function MemberCard({ member }: MemberCardProps) {
   const navigate = useNavigate();
+  const isDemo = usePortfolioDemo();
   const data = getMemberData(member.id);
   const latest = data.egvs[data.egvs.length - 1];
   const status = getGlucoseStatus(latest.value);
@@ -20,7 +23,7 @@ export function MemberCard({ member }: MemberCardProps) {
 
   return (
     <button
-      onClick={() => navigate(`/member/${member.id}`)}
+      onClick={() => navigate(memberDashboardPath(isDemo, member.id))}
       className="w-full rounded-lg bg-card border border-border p-5 text-left transition-all hover:bg-surface-2 hover:border-muted-foreground/20 focus:outline-none focus:ring-2 focus:ring-ring"
     >
       <div className="flex items-center gap-3 mb-4">

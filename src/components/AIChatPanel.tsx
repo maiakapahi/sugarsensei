@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { streamAICoach, ChatMessage } from "@/lib/api";
+import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
+import { streamCannedText, DEMO_AI_INITIAL_REPLY, demoAiReplyForUserMessage } from "@/lib/demo-stream";
 import { Send } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
@@ -17,6 +19,7 @@ interface AIChatPanelProps {
 }
 
 export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
+  const portfolioDemo = usePortfolioDemo();
   const [messages, setMessages] = useState<ChatMessage[]>(
     initialInsight ? [{ role: "assistant", content: initialInsight }] : []
   );
@@ -51,6 +54,10 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
       });
     };
     try {
+      if (portfolioDemo) {
+        await streamCannedText(DEMO_AI_INITIAL_REPLY, updateAssistant, () => setIsStreaming(false), 4, 12);
+        return;
+      }
       await streamAICoach({
         messages: [{
           role: "user",
@@ -86,6 +93,11 @@ export function AIChatPanel({ cgmContext, initialInsight }: AIChatPanelProps) {
     };
 
     try {
+      if (portfolioDemo) {
+        const reply = demoAiReplyForUserMessage(userMsg.content);
+        await streamCannedText(reply, updateAssistant, () => setIsStreaming(false), 4, 12);
+        return;
+      }
       await streamAICoach({
         messages: [...messages, userMsg],
         cgmContext,

@@ -39,8 +39,16 @@ export default function FamilyDashboard() {
     if (loading || showAdd) return;
     if (activeTab !== "bg-insights") return;
     if (searchParams.get("skipAutoOpen") === "1") return;
-    if (members.length === 1) {
-      navigate(memberDashboardPath(isDemo, members[0].id), { replace: true });
+    // Demo should land on a member detail page by default.
+    if (isDemo && members.length >= 1) {
+      const alex = members.find((m) => m.name.trim().toLowerCase() === "alex");
+      const targetId = alex?.id ?? members[0].id;
+      navigate(memberDashboardPath(true, targetId), { replace: true });
+      return;
+    }
+    // Non-demo: only auto-open when there's exactly one member.
+    if (!isDemo && members.length === 1) {
+      navigate(memberDashboardPath(false, members[0].id), { replace: true });
     }
   }, [loading, showAdd, activeTab, members, navigate, searchParams, isDemo]);
 

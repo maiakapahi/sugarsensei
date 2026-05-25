@@ -1,0 +1,16 @@
+name: Supabase Heartbeat
+
+on:
+  schedule:
+    - cron: '0 9 * * 1,4'  # every Monday and Thursday at 9am UTC
+  workflow_dispatch:        # allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://vkxgkhteeitswvgagzug.supabase.co/rest/v1/" \
+            -H "apikey: sb_publishable_lYT7awVPkOephQ4JVtiCog_XJ6iXuAt")
+          echo "Supabase responded with status: $STATUS"

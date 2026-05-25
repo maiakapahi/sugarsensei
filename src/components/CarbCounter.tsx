@@ -59,27 +59,6 @@ export function CarbCounter() {
     scrollToBottom();
 
     try {
-      if (portfolioDemo) {
-        let assistantContent = "";
-        setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-        await streamCannedText(
-          DEMO_CARB_REPLY,
-          (chunk) => {
-            assistantContent += chunk;
-            setMessages((prev) => {
-              const next = [...prev];
-              next[next.length - 1] = { role: "assistant", content: assistantContent };
-              return next;
-            });
-            scrollToBottom();
-          },
-          () => {},
-          3,
-          10,
-        );
-        return;
-      }
-
       const aiMessages = [...messages, userMsg].map((m) => ({
         role: m.role,
         content: m.image
@@ -91,13 +70,14 @@ export function CarbCounter() {
       }));
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("Please sign in again to continue.");
+      const token = session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      if (!token) throw new Error("No auth token available.");
 
       const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/carb-counter`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ messages: aiMessages }),
       });

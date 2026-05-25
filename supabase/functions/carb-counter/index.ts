@@ -20,11 +20,11 @@ serve(async (req) => {
     const authHeader = req.headers.get("authorization");
     if (!authHeader) throw new Error("Missing authorization header");
 
-    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
+    const ANON_KEY = Deno.env.get("ANON_KEY") ?? Deno.env.get("SUPABASE_ANON_KEY");
     const token = authHeader.replace("Bearer ", "");
 
-    // Accept either a valid user session token or the anon key (for demo mode)
-    const isAnonKey = token === SUPABASE_ANON_KEY;
+    // Accept either a valid user session token or the anon/publishable key (for demo mode)
+    const isAnonKey = !!ANON_KEY && token === ANON_KEY;
     if (!isAnonKey) {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
       const { data: { user }, error: authError } = await supabase.auth.getUser(token);

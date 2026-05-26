@@ -123,7 +123,13 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
               dataKey="time"
               type="number"
               domain={["dataMin", "dataMax"]}
-              tickFormatter={(t) => format(new Date(t), "h:mm a")}
+              tickFormatter={(t) =>
+                hours >= 72
+                  ? format(new Date(t), "EEE d")
+                  : hours >= 24
+                  ? format(new Date(t), "EEE h:mm a")
+                  : format(new Date(t), "h:mm a")
+              }
               stroke="hsl(0 0% 35%)"
               tick={{ fontSize: 11 }}
               axisLine={false}

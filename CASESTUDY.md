@@ -2,31 +2,26 @@
 
 ## Context
 
-Sugar Sensei is a family-oriented PWA for Type 1 Diabetes workflows: CGM trends, carb estimation, and conversational coaching. It integrates Supabase (auth, data, edge functions), Dexcom sandbox OAuth, and OpenAI-backed features.
+Sugar Sensei is a family-oriented PWA for Type 1 Diabetes management: CGM trend analysis, AI carb counting from photos, and conversational coaching. Built for personal use for my son, it integrates Supabase (auth, data, edge functions), Dexcom OAuth, and OpenAI.
 
 ## Challenge
 
-Auth-gated apps make portfolio reviews awkward: reviewers must sign up or use shared credentials before they see the product.
+Auth-gated apps make portfolio reviews awkward — reviewers either sign up or skip it entirely. The goal was to give anyone instant access to a fully working version with real data, with zero friction.
 
 ## Approach
 
-The app supports an optional **portfolio build** controlled by **`VITE_DEMO_MODE=true`**:
+A **"Try Demo Account"** button on the login page auto-signs in to a pre-configured account connected to the Dexcom sandbox API. Visitors land directly in the app with live CGM data, a working AI carb counter, and the full AI coaching experience — no sign up, no mock data.
+
+The app routing is simple:
 
 | Route | Purpose |
 |-------|---------|
-| **`/`** | Public **interactive demo** — mock glucose data, sample members, UI parity; AI coach and carb counter use **local canned “streaming”** responses (no account, no API spend). |
-| **`/app`** | **Signed-in** experience — real Supabase session, Dexcom, and edge functions. |
-| **`/auth`** | Email/password sign-in and sign-up for the real app. |
-
-Deployments **without** that variable keep the original layout: **`/`** and **`/member/...`** require authentication.
+| **`/`** | Login page (if not signed in) or family dashboard (if signed in) |
+| **`/member/:memberId`** | Individual member glucose dashboard |
 
 ## Try it
 
-Visit [https://sugarsensei.vercel.app/auth](https://sugarsensei.vercel.app/auth) and click **"Try Demo Account"** — no sign up needed. This auto-logs in to a pre-configured account with live Dexcom sandbox CGM data, real AI carb counting, and the full AI coaching experience.
-
-## Operations note
-
-`VITE_*` variables are fixed at **build** time. After changing `VITE_DEMO_MODE` in Vercel, **redeploy** so the bundle updates.
+Visit **[sugarsensei.vercel.app](https://sugarsensei.vercel.app)** and click **"Try Demo Account"**.
 
 ---
 

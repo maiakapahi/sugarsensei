@@ -1,24 +1,18 @@
 # Sugar Sensei
 
-Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. I originally built it for my son, who lives with Type 1 Diabetes, to make CGM trends, carb counting, and day-to-day decisions easier to manage in one place.
+Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom integration. I originally built it for my son, who lives with Type 1 Diabetes, to make CGM trends, carb counting, and day-to-day decisions easier to manage in one place.
 
 ## Demo access
 
-Enable portfolio layout by setting **`VITE_DEMO_MODE=true`** in `.env` locally, or in **Vercel → Project → Settings → Environment Variables** (then **redeploy** so Vite picks it up).
-
-With that flag:
-- **`/`** — public landing / interactive demo (mock CGM, sample family; no Supabase session).
-- **`/auth`** — sign in / sign up, plus a **"Try Demo Account"** button that auto-logs in with real Dexcom sandbox data.
-- **`/app`** — signed-in app (real Supabase session, Dexcom, and live edge functions).
-- **`/demo`** — redirects to **`/`** (legacy bookmark).
-
-Without `VITE_DEMO_MODE`, **`/` requires auth** (redirects to `/auth` if not signed in).
-
-### Try Demo Account
-
-The recommended way for portfolio visitors to explore the app is the **"Try Demo Account"** button on `/auth`. It automatically signs in as the demo account and lands in `/app` with live Dexcom sandbox CGM data — no sign up required.
+Visit **[sugarsensei.vercel.app](https://sugarsensei.vercel.app)** and click **"Try Demo Account"** — no sign up needed. This auto-logs in to a pre-configured account with live Dexcom sandbox CGM data, real AI carb counting, and the full AI coaching experience.
 
 The demo account (`demo@sugarsensei.ca`) should remain connected to Dexcom sandbox. Do not change its password or disconnect Dexcom.
+
+## Routing
+
+- **`/`** — login page if not signed in; family dashboard if signed in
+- **`/member/:memberId`** — member glucose dashboard
+- **`/dexcom-callback`** — Dexcom OAuth redirect handler
 
 ## Disclaimer
 
@@ -26,14 +20,15 @@ Sugar Sensei is a personal prototype built for learning and exploration of AI-as
 
 It is not a medical device and is not intended to provide medical advice, diagnosis, or treatment decisions.
 
-All data is simulated or sandbox-based.
+All data is sandbox-based.
 
 ## Highlights
 
-- Dexcom sandbox OAuth flow with token storage in Supabase
+- Dexcom OAuth flow with token storage and auto-refresh in Supabase
 - Family member management with row-level security
-- AI carb counting with image upload support
-- AI coach for recent CGM trend summaries
+- AI carb counting with photo upload — works for all users including demo
+- AI coach for CGM trend analysis using all available data
+- Glucose chart with day-labelled x-axis and time range tabs that grey out when data is unavailable
 - Mobile-friendly PWA with installable manifest
 
 ## Stack
@@ -42,7 +37,7 @@ All data is simulated or sandbox-based.
 - Tailwind CSS + shadcn/ui
 - Supabase Auth, Postgres, and Edge Functions
 - OpenAI for AI features
-- Dexcom sandbox API for CGM integration
+- Dexcom API for CGM integration (sandbox by default; EU production-ready)
 
 ## Local development
 
@@ -71,8 +66,6 @@ Frontend environment variables:
 ```sh
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
-# Optional: public demo at / and signed-in app at /app (see "Demo access")
-# VITE_DEMO_MODE=true
 ```
 
 Supabase Edge Function secrets:
@@ -81,6 +74,7 @@ Supabase Edge Function secrets:
 OPENAI_API_KEY=your_openai_api_key
 DEXCOM_CLIENT_ID=your_dexcom_client_id
 DEXCOM_CLIENT_SECRET=your_dexcom_client_secret
+SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ## Supabase setup
@@ -104,6 +98,7 @@ Set secrets:
 npx supabase secrets set OPENAI_API_KEY=your_openai_api_key
 npx supabase secrets set DEXCOM_CLIENT_ID=your_dexcom_client_id
 npx supabase secrets set DEXCOM_CLIENT_SECRET=your_dexcom_client_secret
+npx supabase secrets set SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 Deploy functions:
@@ -127,36 +122,23 @@ Set these Vercel environment variables:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
-- Optional for portfolio: `VITE_DEMO_MODE` = `true` (redeploy after adding)
 
-After deploy, set your Supabase Auth site URL and redirect URLs to your Vercel domain. If you use portfolio mode, include both your site root and **`/app`** (or the paths you use) in Supabase redirect URLs as needed for your auth flow.
+After deploy, set your Supabase Auth site URL and redirect URLs to your Vercel domain.
 
-## Dexcom sandbox
+## Dexcom integration
 
-This repo is configured for Dexcom sandbox by default. Register a Dexcom developer app and set the redirect URI to:
+Configured for Dexcom sandbox by default (`sandbox-api.dexcom.com`). For production use outside the US, switch the base URL to `api.dexcom.eu` and provision credentials through Dexcom API support.
+
+Set the redirect URI to:
 
 ```text
 https://your-vercel-domain/dexcom-callback
 ```
 
-Dexcom sandbox docs:
-
-- [Authentication](https://developer.dexcom.com/docs/dexcom/authentication)
-- [Sandbox Data](https://developer.dexcom.com/docs/dexcom/sandbox-data/)
+Dexcom docs: [developer.dexcom.com](https://developer.dexcom.com/)
 
 ## Security notes
 
 - Do not commit `.env` files or secrets.
 - Keep OpenAI and Dexcom credentials in Supabase secrets, not in the browser.
 - Redeploy Supabase functions after changing auth rules or secrets.
-
-## Current status
-
-Current setup supports:
-
-- Supabase auth and member creation
-- Dexcom sandbox connection
-- AI carb counting
-- AI coaching
-
-Production Dexcom support can be added later by making the Dexcom base URL configurable instead of sandbox-only.

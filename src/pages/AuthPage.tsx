@@ -12,7 +12,24 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: "demo@sugarsensei.ca",
+        password: "demouser",
+      });
+      if (error) throw error;
+      navigate(authedHomePath());
+    } catch (err: any) {
+      toast({ title: "Demo login failed", description: err.message, variant: "destructive" });
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,12 +101,28 @@ export default function AuthPage() {
           </form>
 
           {isPortfolioDemoBuild() && (
-            <p className="text-center text-xs text-muted-foreground mt-4">
-              <Link to="/" className="underline hover:text-foreground">
-                Try the interactive demo
-              </Link>{" "}
-              — no account required
-            </p>
+            <>
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-card px-2 text-muted-foreground">or</span>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={handleDemoLogin}
+                disabled={demoLoading}
+              >
+                {demoLoading ? "Loading demo..." : "🩺 Try Demo Account"}
+              </Button>
+              <p className="text-center text-xs text-muted-foreground mt-2">
+                Real Dexcom CGM data · No sign up needed
+              </p>
+            </>
           )}
         </div>
       </div>

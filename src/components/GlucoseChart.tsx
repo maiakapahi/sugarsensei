@@ -23,6 +23,11 @@ const timeRanges = [
 export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const [hours, setHours] = useState<number>(6);
 
+  // How many hours of data do we actually have?
+  const availableHours = egvs.length > 0
+    ? (Date.now() - new Date(egvs[egvs.length - 1].timestamp).getTime()) / (1000 * 60 * 60)
+    : 6;
+
   const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
   const filtered = egvs.filter((r) => new Date(r.timestamp) >= cutoff);
   const filteredEvents = events.filter((e) => new Date(e.timestamp) >= cutoff);
@@ -85,19 +90,26 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-muted-foreground">Glucose</h3>
         <div className="flex gap-1 bg-surface-2 rounded-md p-0.5">
-          {timeRanges.map((t) => (
-            <button
-              key={t.hours}
-              onClick={() => setHours(t.hours)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
-                hours === t.hours
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+          {timeRanges.map((t) => {
+            const hasData = t.hours <= Math.ceil(availableHours) + 1;
+            return (
+              <button
+                key={t.hours}
+                onClick={() => hasData && setHours(t.hours)}
+                disabled={!hasData}
+                title={!hasData ? "Not enough data" : undefined}
+                className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+                  hours === t.hours
+                    ? "bg-primary text-primary-foreground"
+                    : !hasData
+                    ? "text-muted-foreground/30 cursor-not-allowed"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -24,9 +24,10 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
   const [hours, setHours] = useState<number>(6);
 
   // How many hours of data do we actually have?
-  const availableHours = egvs.length > 0
-    ? (Date.now() - new Date(egvs[egvs.length - 1].timestamp).getTime()) / (1000 * 60 * 60)
-    : 6;
+  const oldestTimestamp = egvs.length > 0
+    ? Math.min(...egvs.map((r) => new Date(r.timestamp).getTime()))
+    : Date.now();
+  const availableHours = (Date.now() - oldestTimestamp) / (1000 * 60 * 60);
 
   const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
   const filtered = egvs.filter((r) => new Date(r.timestamp) >= cutoff);

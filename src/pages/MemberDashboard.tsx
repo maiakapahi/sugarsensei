@@ -87,24 +87,31 @@ export default function MemberDashboard() {
   }
 
   const latest = egvs.length > 0 ? egvs[egvs.length - 1] : null;
-  const stats = calculateStats(egvs, 24);
+
+  // Calculate actual data span in hours
+  const dataSpanHours = egvs.length > 1
+    ? Math.round((new Date(egvs[egvs.length - 1].timestamp).getTime() - new Date(egvs[0].timestamp).getTime()) / (1000 * 60 * 60))
+    : 24;
+  const statsHours = Math.max(dataSpanHours, 24);
+  const stats = calculateStats(egvs, statsHours);
 
   // Build CGM context for AI
   const cgmContext = latest ? `
 Current BG: ${mgToMmol(latest.value)} mmol/L
 Trend: ${getTrendLabel(latest.trend)} (${Math.round(mgToMmol(latest.trendRate) * 10) / 10} mmol/L/min)
 Status: ${getGlucoseStatus(latest.value)}
+Data available: last ${dataSpanHours} hours
 Time in Range (3.9–10.0): ${stats.tir}%
 Time High: ${stats.high}%
 Time Low: ${stats.low}%
 Average BG: ${stats.avg} mmol/L
-Readings in last 24h: ${stats.readings}
+Total readings: ${stats.readings}
 Recent events: ${events.map(e =>
   e.type === "carbs" ? `${e.value}g carbs` :
   e.type === "insulin" ? `${e.value}u insulin` :
   `${e.duration}min exercise`
 ).join(", ") || "None"}
-Last 6 readings: ${egvs.slice(-6).map(r => `${mgToMmol(r.value)} (${getTrendArrow(r.trend)})`).join(", ")}
+Last 12 readings: ${egvs.slice(-12).map(r => `${mgToMmol(r.value)} (${getTrendArrow(r.trend)})`).join(", ")}
   `.trim() : "No CGM data available.";
 
   if (loading) {

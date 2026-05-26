@@ -180,7 +180,11 @@ export function GlucoseChart({ egvs, events }: GlucoseChartProps) {
                 {e.type === "exercise" && `${e.duration}min exercise`}
               </span>
               <span className="text-muted-foreground/50">
-                {format(new Date(e.timestamp), "h:mm a")}
+                {hours >= 72
+                  ? format(new Date(e.timestamp), "EEE d, h:mm a")
+                  : hours >= 24
+                  ? format(new Date(e.timestamp), "EEE h:mm a")
+                  : format(new Date(e.timestamp), "h:mm a")}
               </span>
             </div>
           ))}

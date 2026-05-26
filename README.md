@@ -2,33 +2,23 @@
 
 Sugar Sensei is a personal-use diabetes management PWA built with React, Supabase, and Dexcom sandbox integration. I originally built it for my son, who lives with Type 1 Diabetes, to make CGM trends, carb counting, and day-to-day decisions easier to manage in one place.
 
-## Demo access (two ways)
+## Demo access
 
-### 1. Portfolio preview — no login (mock UI)
+Enable portfolio layout by setting **`VITE_DEMO_MODE=true`** in `.env` locally, or in **Vercel → Project → Settings → Environment Variables** (then **redeploy** so Vite picks it up).
 
-For a **public URL where visitors do not need credentials**, enable portfolio layout:
+With that flag:
+- **`/`** — public landing / interactive demo (mock CGM, sample family; no Supabase session).
+- **`/auth`** — sign in / sign up, plus a **"Try Demo Account"** button that auto-logs in with real Dexcom sandbox data.
+- **`/app`** — signed-in app (real Supabase session, Dexcom, and live edge functions).
+- **`/demo`** — redirects to **`/`** (legacy bookmark).
 
-- Set **`VITE_DEMO_MODE=true`** in `.env` locally, or in **Vercel → Project → Settings → Environment Variables** (then **redeploy** so Vite picks it up).
-- With that flag:
-  - **`/`** — interactive demo (mock CGM, sample family, canned AI/carb replies; no Supabase session).
-  - **`/app`** — real signed-in app (same as before, but under `/app`).
-  - **`/auth`** — sign in / sign up for the real app.
-  - **`/demo`** — redirects to **`/`** (legacy bookmark).
+Without `VITE_DEMO_MODE`, **`/` requires auth** (redirects to `/auth` if not signed in).
 
-Example production host: `https://sugarsensei.vercel.app/` for the demo when the variable is set on that deployment.
+### Try Demo Account
 
-Without `VITE_DEMO_MODE`, **`/` requires auth** (you are sent to `/auth` if not signed in).
+The recommended way for portfolio visitors to explore the app is the **"Try Demo Account"** button on `/auth`. It automatically signs in as the demo account and lands in `/app` with live Dexcom sandbox CGM data — no sign up required.
 
-### 2. Full app sandbox — demo account
-
-Use this account when you want **real auth, Dexcom sandbox, and live edge functions**:
-
-- Email: `demo@sugarsensei.ca`
-- Password: `demouser`
-
-Open **`/auth`**, sign in, then use **`/app`** if portfolio mode is on, or **`/`** if it is off.
-
-This account is demo-only and should stay connected to sandbox or sample data.
+The demo account (`demo@sugarsensei.ca`) should remain connected to Dexcom sandbox. Do not change its password or disconnect Dexcom.
 
 ## Disclaimer
 

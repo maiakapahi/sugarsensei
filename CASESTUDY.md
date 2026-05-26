@@ -22,8 +22,7 @@ Deployments **without** that variable keep the original layout: **`/`** and **`/
 
 ## Try it
 
-- **No credentials (when `VITE_DEMO_MODE` is set on the host):** open the site root, e.g. [https://sugarsensei.vercel.app/](https://sugarsensei.vercel.app/).
-- **Full sandbox (credentials):** sign in at `/auth` with the demo account documented in [README.md](./README.md), then use `/app` when portfolio mode is enabled.
+Visit [https://sugarsensei.vercel.app/auth](https://sugarsensei.vercel.app/auth) and click **"Try Demo Account"** — no sign up needed. This auto-logs in to a pre-configured account with live Dexcom sandbox CGM data, real AI carb counting, and the full AI coaching experience.
 
 ## Operations note
 

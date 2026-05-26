@@ -120,7 +120,7 @@ export default function AuthPage() {
                 {demoLoading ? "Loading demo..." : "🩺 Try Demo Account"}
               </Button>
               <p className="text-center text-xs text-muted-foreground mt-2">
-                Real Dexcom CGM data · No sign up needed
+                Live Dexcom sandbox CGM data · No sign up needed
               </p>
             </>
           )}

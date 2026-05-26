@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { isPortfolioDemoBuild } from "@/lib/portfolio-demo-build";
 import { authedHomePath } from "@/lib/authed-routes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,8 +99,7 @@ export default function AuthPage() {
             </Button>
           </form>
 
-          {isPortfolioDemoBuild() && (
-            <>
+          <>
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-border" />
@@ -123,7 +121,6 @@ export default function AuthPage() {
                 Live Dexcom sandbox CGM data · No sign up needed
               </p>
             </>
-          )}
         </div>
       </div>
     </div>

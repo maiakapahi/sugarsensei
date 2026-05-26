@@ -3,8 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { startDexcomOAuth } from "@/lib/api";
 import { memberDashboardPath } from "@/lib/authed-routes";
-import { usePortfolioDemo } from "@/context/PortfolioDemoContext";
-import { mockMembers } from "@/lib/mock-data";
 import { MemberCard } from "@/components/MemberCard";
 import { CarbCounter } from "@/components/CarbCounter";
 import { Button } from "@/components/ui/button";
@@ -21,7 +19,6 @@ interface Member {
 }
 
 export default function FamilyDashboard() {
-  const isDemo = usePortfolioDemo();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -33,38 +30,19 @@ export default function FamilyDashboard() {
 
   useEffect(() => {
     loadMembers();
-  }, [isDemo]);
+  }, []);
 
   useEffect(() => {
     if (loading || showAdd) return;
     if (activeTab !== "bg-insights") return;
     if (searchParams.get("skipAutoOpen") === "1") return;
-    // Demo should land on a member detail page by default.
-    if (isDemo && members.length >= 1) {
-      const alex = members.find((m) => m.name.trim().toLowerCase() === "alex");
-      const targetId = alex?.id ?? members[0].id;
-      navigate(memberDashboardPath(true, targetId), { replace: true });
-      return;
+    // Auto-open when there's exactly one member.
+    if (members.length === 1) {
+      navigate(memberDashboardPath(members[0].id), { replace: true });
     }
-    // Non-demo: only auto-open when there's exactly one member.
-    if (!isDemo && members.length === 1) {
-      navigate(memberDashboardPath(false, members[0].id), { replace: true });
-    }
-  }, [loading, showAdd, activeTab, members, navigate, searchParams, isDemo]);
+  }, [loading, showAdd, activeTab, members, navigate, searchParams]);
 
   async function loadMembers() {
-    if (isDemo) {
-      setMembers(
-        mockMembers.map((m) => ({
-          id: m.id,
-          name: m.name,
-          relationship: m.relationship,
-          dexcom_access_token: "demo",
-        })),
-      );
-      setLoading(false);
-      return;
-    }
     const { data, error } = await supabase.from("members").select("id, name, relationship, dexcom_access_token");
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -76,7 +54,6 @@ export default function FamilyDashboard() {
 
   async function addMember(e: React.FormEvent) {
     e.preventDefault();
-    if (isDemo) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -97,13 +74,6 @@ export default function FamilyDashboard() {
   }
 
   async function connectDexcom(memberId: string) {
-    if (isDemo) {
-      toast({
-        title: "Portfolio demo",
-        description: "Sign in to the full app to connect a real Dexcom account.",
-      });
-      return;
-    }
     try {
       await startDexcomOAuth(memberId);
     } catch (err: any) {
@@ -112,12 +82,8 @@ export default function FamilyDashboard() {
   }
 
   async function handleLogout() {
-    if (isDemo) {
-      navigate("/auth");
-      return;
-    }
     await supabase.auth.signOut();
-    navigate("/auth");
+    navigate("/");
   }
 
   function handleTabChange(value: string) {
@@ -137,14 +103,9 @@ export default function FamilyDashboard() {
       <header className="border-b border-border px-4 py-3 flex items-center justify-between gap-2">
         <div className="min-w-0">
           <h1 className="text-xl font-bold text-foreground truncate">🥋 Sugar Sensei</h1>
-          {isDemo && (
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              Demo · <button type="button" className="underline hover:text-foreground" onClick={() => navigate("/auth")}>Sign in for the real app</button>
-            </p>
-          )}
         </div>
         <Button variant="ghost" size="sm" onClick={handleLogout} className="shrink-0">
-          <LogOut className="h-4 w-4 mr-1" /> {isDemo ? "Exit" : "Sign Out"}
+          <LogOut className="h-4 w-4 mr-1" /> Sign Out
         </Button>
       </header>
 
@@ -172,11 +133,9 @@ export default function FamilyDashboard() {
           <main className="max-w-2xl mx-auto p-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-foreground">Family Members</h2>
-              {!isDemo && (
-                <Button size="sm" onClick={() => setShowAdd(true)}>
-                  <Plus className="h-4 w-4 mr-1" /> Add Member
-                </Button>
-              )}
+              <Button size="sm" onClick={() => setShowAdd(true)}>
+                <Plus className="h-4 w-4 mr-1" /> Add Member
+              </Button>
             </div>
 
             {showAdd && (

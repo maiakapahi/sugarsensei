@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const DEXCOM_BASE = "https://sandbox-api.dexcom.com";
+const DEXCOM_BASE = "https://api.dexcom.eu";
 const DEXCOM_TOKEN_URL = `${DEXCOM_BASE}/v3/oauth2/token`;
 
 serve(async (req) => {
